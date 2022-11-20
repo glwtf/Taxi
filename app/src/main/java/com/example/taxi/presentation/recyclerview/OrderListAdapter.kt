@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.taxi.R
+import com.example.taxi.databinding.ItemTaxiOrderBinding
 import com.example.taxi.domain.Order
 
 class OrderListAdapter() : ListAdapter<
@@ -13,18 +14,23 @@ class OrderListAdapter() : ListAdapter<
 {
     var onShopItemClickListener : ((Order) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderItemViewHolder { //create view
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_taxi_order, parent, false)
-        return OrderItemViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderItemViewHolder {
+        val binding = ItemTaxiOrderBinding.inflate (
+        LayoutInflater.from(parent.context),
+        parent,
+        false
+    )
+        return OrderItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: OrderItemViewHolder, position: Int) { //set data in view
         val order = getItem(position)
-        holder.tvStartAddress.text = "${order.startAddress.city} ${order.startAddress.address}"
-        holder.tvEndAddress.text = "${order.endAddress.city} ${order.endAddress.address}"
-        holder.tvOrderTime.text = order.orderTime
-        holder.tvPrice.text = "${order.price.amount / 100} ${order.price.currency}"
-        holder.view.setOnClickListener {
+        val binding = holder.binding
+        binding.tvStartAddress.text = "${order.startAddress.city} ${order.startAddress.address}"
+        binding.tvEndAddress.text = "${order.endAddress.city} ${order.endAddress.address}"
+        binding.tvOrderTime.text = order.orderTime
+        binding.tvPrice.text = "${order.price.amount / 100} ${order.price.currency}"
+        binding.root.setOnClickListener {
             onShopItemClickListener?.invoke(order)
         }
 

@@ -40,7 +40,7 @@ class OrderItemFragment : Fragment() {
         _binding?.tvStartAddress?.text = "${orderItem?.startAddress?.city} ${orderItem?.startAddress?.address}"
         _binding?.tvEndAddress?.text = "${orderItem?.endAddress?.city} ${orderItem?.endAddress?.address}"
         _binding?.tvOrderTime?.text = orderItem?.orderTime
-        _binding?.tvPrice?.text = "${orderItem?.price?.amount?.div(100)} ${orderItem?.price?.amount}"
+        _binding?.tvPrice?.text = "${orderItem?.price?.amount?.div(100)} ${orderItem?.price?.currency}"
         _binding?.tvVehicle?.text = orderItem?.vehicle.toString()
     }
 
