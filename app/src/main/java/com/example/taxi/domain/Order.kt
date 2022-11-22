@@ -12,6 +12,7 @@ data class Order(
     val vehicle : Vehicle
 )
 {
+
     @Serializable
     data class Address (
         val city : String,

@@ -1,12 +1,10 @@
 package com.example.taxi.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.taxi.data.OrdersRepositoryImpl
 import com.example.taxi.domain.GetOrderItemUseCase
 import com.example.taxi.domain.LoadImageUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import java.io.File
 
 class OrderItemViewModel : ViewModel() {
 
@@ -17,13 +15,12 @@ class OrderItemViewModel : ViewModel() {
 
     fun getShopItem(itemId: Int) = getOrderItemUseCase(itemId)
 
-    fun loadImageFromNetwork(imageName : String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            loadImageUseCase.loadImageFromNetwork(imageName)
-        }
+    suspend fun loadImageFromNetwork(imageName : String) {
+        loadImageUseCase.loadImageFromNetwork(imageName)
     }
 
     fun checkImageOnDevice(imagePath : String) : Boolean{
-        return false
+        val file = File(imagePath)
+        return file.exists()
     }
 }

@@ -13,6 +13,7 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.main_container, MainFragment.newMainFragmentInstance())
             .addToBackStack(null)
             .commit()
+
     }
 }
 
