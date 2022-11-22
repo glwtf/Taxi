@@ -1,5 +1,6 @@
 package com.example.taxi.data
 
+import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import com.example.taxi.domain.Order
 import com.example.taxi.domain.OrdersRepository
@@ -17,6 +18,11 @@ object OrdersRepositoryImpl : OrdersRepository {
         val orders = LoadOrders()
         orderList = orders()
         ldOrders.value = orderList
+    }
+
+    override suspend fun loadImageFromNetwork(imageName : String) {
+        val imageUrl = LoadImage()
+        imageUrl.loadImageFromNetwork(imageName)
     }
 }
 
