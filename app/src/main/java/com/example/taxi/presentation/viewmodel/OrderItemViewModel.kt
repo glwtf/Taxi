@@ -15,8 +15,8 @@ class OrderItemViewModel : ViewModel() {
 
     fun getShopItem(itemId: Int) = getOrderItemUseCase(itemId)
 
-    suspend fun loadImageFromNetwork(imageName : String) {
-        loadImageUseCase.loadImageFromNetwork(imageName)
+    suspend fun loadImageFromNetwork(imageName : String, dirPath : String) {
+        loadImageUseCase.loadImageFromNetwork(imageName, dirPath)
     }
 
     fun checkImageOnDevice(imagePath : String) : Boolean{

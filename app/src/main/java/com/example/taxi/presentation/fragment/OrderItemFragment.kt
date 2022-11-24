@@ -14,6 +14,10 @@ import com.example.taxi.domain.Order
 import com.example.taxi.presentation.viewmodel.OrderItemViewModel
 import java.io.File
 import androidx.lifecycle.*
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
+import com.bumptech.glide.Glide
+import com.example.taxi.presentation.DeleteWorker
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -58,25 +62,41 @@ class OrderItemFragment : Fragment() {
 
     private suspend fun loadData(order: Order) {
         val photo = order.vehicle.photo
-        val photoPath = IMAGE_DOWNLOAD_PATH_PREFIX+photo
+        val cacheDir = "${context?.cacheDir?.toString()}/"
+        //val cacheDir = IMAGE_DOWNLOAD_PATH_PREFIX
+        val photoPath = "$cacheDir$photo"
         val date = formatData(order.orderTime)
 
         if (!orderItemViewModel.checkImageOnDevice(photoPath)) {
-            orderItemViewModel.loadImageFromNetwork(photo)
-        }
-        _binding?.ivPhoto?.load(File(photoPath))
+            orderItemViewModel.loadImageFromNetwork(photo, cacheDir)
+            Log.d("SERVICE_TAG", "Load file $photoPath")
 
+            val workManager = WorkManager.getInstance(requireContext().applicationContext)
+            workManager.enqueue(
+                DeleteWorker.makeRequest(photoPath)
+            )
+        }
+
+        _binding?.ivPhoto?.load(File(photoPath))
+        /*_binding?.ivPhoto?.let {
+            Glide
+                .with(this)
+                .load(IMAGE_URL_PREFIX+photo)
+                .into(it)
+        }*/
         _binding?.tvStartAddress?.text = "${order.startAddress.city} ${order.startAddress.address}"
         _binding?.tvEndAddress?.text = "${order.endAddress.city} ${order.endAddress.address}"
-        _binding?.tvOrderTime?.text = order.orderTime
+        _binding?.tvOrderTime?.text = date
         _binding?.tvPrice?.text = "${order.price.amount.div(100)} ${order.price.currency}"
         _binding?.tvVehicle?.text = order.vehicle.toString()
 
     }
 
-    private fun formatData(dateString : String) : Date {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+'HH:MM");
-        return sdf.parse(dateString)
+    private fun formatData(dateString : String) : String {
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        val outFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        val originDate = originalFormat.parse(dateString)
+        return outFormat.format(originDate)
     }
 
     override fun onDestroyView() {
