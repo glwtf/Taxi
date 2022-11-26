@@ -7,16 +7,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import com.example.taxi.R
 import com.example.taxi.databinding.FragmentMainBinding
 import com.example.taxi.presentation.viewmodel.MainFragmentViewModel
 import com.example.taxi.presentation.recyclerview.OrderListAdapter
+import com.example.taxi.presentation.viewmodel.OrderItemViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainFragment : Fragment() {
 
-    private lateinit var viewModel: MainFragmentViewModel
+    private val viewModel by lazy {
+        ViewModelProvider(this)[MainFragmentViewModel::class.java]
+    }
+
     private lateinit var rvAdapter: OrderListAdapter
 
     private var _binding: FragmentMainBinding? = null
@@ -34,7 +40,6 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
-        viewModel = ViewModelProvider(this)[MainFragmentViewModel::class.java]
         viewModel.ldOrders.observe(viewLifecycleOwner){ item ->
             rvAdapter.submitList(item)
         }
@@ -61,18 +66,9 @@ class MainFragment : Fragment() {
         }
 
     private fun launchFragment(orderId : Int) {
-        requireActivity().supportFragmentManager.popBackStack(
-            MAIN_FRAGMENT_NAME,
-            FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, OrderItemFragment.newIntentOrder(orderId))
-            .addToBackStack(MAIN_FRAGMENT_NAME)
-            .commit()
-    }
-
-    companion object {
-        const val MAIN_FRAGMENT_NAME = "main_fragment"
-        fun newMainFragmentInstance() = MainFragment()
+        findNavController().navigate(
+            MainFragmentDirections.actionMainFragmentToOrderItemFragment(orderId)
+        )
     }
 
 }
