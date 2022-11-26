@@ -14,6 +14,8 @@ import com.example.taxi.domain.Order
 import com.example.taxi.presentation.viewmodel.OrderItemViewModel
 import java.io.File
 import androidx.lifecycle.*
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.bumptech.glide.Glide
@@ -24,18 +26,14 @@ import java.util.*
 
 class OrderItemFragment : Fragment() {
 
-    private lateinit var orderItemViewModel : OrderItemViewModel
-    private var shopItemId : Int = UNDEFINED_ID
+    private val orderItemViewModel by lazy {
+        ViewModelProvider(this)[OrderItemViewModel::class.java]
+    }
+    private val args by navArgs<OrderItemFragmentArgs>()
 
     private var _binding: FragmentOrderItemBinding? = null
     private val binding: FragmentOrderItemBinding
         get() = _binding ?: throw java.lang.RuntimeException("FragmentOrderItemBinding == null")
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        orderItemViewModel = ViewModelProvider(this)[OrderItemViewModel::class.java]
-        parseArgv()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +46,7 @@ class OrderItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val orderItem = orderItemViewModel.getShopItem(shopItemId)
+        val orderItem = orderItemViewModel.getShopItem(args.orderId)
         if (orderItem != null)
         {
             lifecycleScope.launch {
@@ -90,6 +88,7 @@ class OrderItemFragment : Fragment() {
         _binding?.tvPrice?.text = "${order.price.amount.div(100)} ${order.price.currency}"
         _binding?.tvVehicle?.text = order.vehicle.toString()
 
+
     }
 
     private fun formatData(dateString : String) : String {
@@ -102,25 +101,5 @@ class OrderItemFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun parseArgv() {
-        val argv = arguments
-        shopItemId = argv?.getInt(ORDER_ITEM_ID, UNDEFINED_ID) ?: UNDEFINED_ID
-    }
-
-    companion object {
-
-        private const val ORDER_ITEM_ID = "order_item_id"
-        private const val UNDEFINED_ID = -1
-        private const val IMAGE_DOWNLOAD_PATH_PREFIX = "/sdcard/Download/"
-
-        fun newIntentOrder(itemId : Int) : OrderItemFragment {
-            return OrderItemFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ORDER_ITEM_ID, itemId)
-                }
-            }
-        }
     }
 }
