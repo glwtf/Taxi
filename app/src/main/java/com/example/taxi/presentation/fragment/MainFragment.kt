@@ -5,17 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.taxi.R
 import com.example.taxi.databinding.FragmentMainBinding
 import com.example.taxi.presentation.viewmodel.MainFragmentViewModel
 import com.example.taxi.presentation.recyclerview.OrderListAdapter
-import com.example.taxi.presentation.viewmodel.OrderItemViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MainFragment : Fragment() {
 

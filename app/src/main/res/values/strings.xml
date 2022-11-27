@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Taxi</string>
+    <string name="start_address">Начальный адрес</string>
+    <string name="end_address">Конечный адрес</string>
+    <string name="price">Стоимость заказа</string>
+    <string name="order_time">Дата и время поездки</string>
+    <string name="vehicle">Информация о водителе и машине</string>
+    <string name="driverName">Имя водителя</string>
+    <string name="modelName">Модель машины</string>
+    <string name="regNumber">Номер машины</string>
 </resources>

@@ -25,14 +25,13 @@ class DeleteWorker(
                 NotificationManager
 
     override suspend  fun doWork(): Result {
-        log("doWork")
         val fullImagePath = workerParameters.inputData.getString(IMAGE_FULL_PATH)
         if (fullImagePath != null) {
             val progress = "Starting Download"
             val result = deletePhoto(fullImagePath)
             log(result)
             setForeground(createForegroundInfo(progress))
-            log("doWork2")
+            log("Delete: $fullImagePath")
         }
         return Result.success()
     }
@@ -40,7 +39,6 @@ class DeleteWorker(
     private fun deletePhoto(fullImagePath : String) = File(fullImagePath).delete()
 
     private fun createForegroundInfo(progress: String): ForegroundInfo {
-        log("createForegroundInfo")
         return ForegroundInfo(2, notification(progress))
     }
 

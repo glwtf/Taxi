@@ -1,6 +1,5 @@
 package com.example.taxi.presentation.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,15 +13,12 @@ import com.example.taxi.domain.Order
 import com.example.taxi.presentation.viewmodel.OrderItemViewModel
 import java.io.File
 import androidx.lifecycle.*
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.example.taxi.presentation.DeleteWorker
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
 
 class OrderItemFragment : Fragment() {
 
@@ -61,7 +57,6 @@ class OrderItemFragment : Fragment() {
     private suspend fun loadData(order: Order) {
         val photo = order.vehicle.photo
         val cacheDir = "${context?.cacheDir?.toString()}/"
-        //val cacheDir = IMAGE_DOWNLOAD_PATH_PREFIX
         val photoPath = "$cacheDir$photo"
         val date = formatData(order.orderTime)
 
@@ -75,19 +70,17 @@ class OrderItemFragment : Fragment() {
             )
         }
 
-        _binding?.ivPhoto?.load(File(photoPath))
-        /*_binding?.ivPhoto?.let {
-            Glide
-                .with(this)
-                .load(IMAGE_URL_PREFIX+photo)
-                .into(it)
-        }*/
-        _binding?.tvStartAddress?.text = "${order.startAddress.city} ${order.startAddress.address}"
-        _binding?.tvEndAddress?.text = "${order.endAddress.city} ${order.endAddress.address}"
-        _binding?.tvOrderTime?.text = date
-        _binding?.tvPrice?.text = "${order.price.amount.div(100)} ${order.price.currency}"
-        _binding?.tvVehicle?.text = order.vehicle.toString()
-
+        binding.tvStartAddress.text = "${order.startAddress.city} ${order.startAddress.address}"
+        binding.tvEndAddress.text = "${order.endAddress.city} ${order.endAddress.address}"
+        binding.tvOrderTime.text = date
+        binding.tvPrice.text = "${order.price.amount.div(100)} ${order.price.currency}"
+        binding.tvDriverName.text = order.vehicle.driverName
+        binding.tvModelName.text = order.vehicle.modelName
+        binding.tvRegNumber.text = order.vehicle.regNumber
+        binding.ivPhoto.load(File(photoPath))
+        /*Glide.with(this)
+            .load(photoPath)
+                .into(binding.ivPhoto)*/
 
     }
 
