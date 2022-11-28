@@ -30,8 +30,8 @@ class DeleteWorker(
             val progress = "Starting Download"
             val result = deletePhoto(fullImagePath)
             log(result)
-            setForeground(createForegroundInfo(progress))
             log("Delete: $fullImagePath")
+            setForeground(createForegroundInfo(progress))
         }
         return Result.success()
     }

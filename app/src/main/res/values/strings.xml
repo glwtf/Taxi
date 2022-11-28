@@ -4,6 +4,7 @@
     <string name="end_address">Конечный адрес</string>
     <string name="price">Стоимость заказа</string>
     <string name="order_time">Дата и время поездки</string>
+    <string name="order_date">Дата поездки</string>
     <string name="vehicle">Информация о водителе и машине</string>
     <string name="driverName">Имя водителя</string>
     <string name="modelName">Модель машины</string>

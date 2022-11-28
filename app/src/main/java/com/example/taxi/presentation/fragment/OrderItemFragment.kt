@@ -86,7 +86,7 @@ class OrderItemFragment : Fragment() {
 
     private fun formatData(dateString : String) : String {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        val outFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        val outFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         val originDate = originalFormat.parse(dateString)
         return outFormat.format(originDate)
     }

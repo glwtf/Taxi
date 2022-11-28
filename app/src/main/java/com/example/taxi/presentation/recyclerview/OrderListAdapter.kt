@@ -43,13 +43,8 @@ class OrderListAdapter() : ListAdapter<
 
     private fun formatData(dateString : String) : String {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        val outFormat = SimpleDateFormat("yyyy-MM-dd");
+        val outFormat = SimpleDateFormat("dd/MM/yyyy");
         val originDate = originalFormat.parse(dateString)
         return outFormat.format(originDate)
-    }
-
-    companion object {
-        const val VIEW_TYPE_DISABLED = 2
-        const val MAX_POOL_SIZE = 15
     }
 }
