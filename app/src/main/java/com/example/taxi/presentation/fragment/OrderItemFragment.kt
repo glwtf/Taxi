@@ -59,36 +59,41 @@ class OrderItemFragment : Fragment() {
         val cacheDir = "${context?.cacheDir?.toString()}/"
         val photoPath = "$cacheDir$photo"
         val date = formatData(order.orderTime)
+        val startAddress = "${order.startAddress.city} ${order.startAddress.address}"
+        val endAddress = "${order.endAddress.city} ${order.endAddress.address}"
+        val price = "${order.price.amount.div(100)} ${order.price.currency}"
+        val driverName = order.vehicle.driverName
+        val modelName = order.vehicle.modelName
+        val regNumber = order.vehicle.regNumber
 
-        if (!orderItemViewModel.checkImageOnDevice(photoPath)) {
+        if (!checkImageOnDevice(photoPath)) {
             orderItemViewModel.loadImageFromNetwork(photo, cacheDir)
-            Log.d("SERVICE_TAG", "Load file $photoPath")
-
             val workManager = WorkManager.getInstance(requireContext().applicationContext)
             workManager.enqueue(
                 DeleteWorker.makeRequest(photoPath)
             )
         }
 
-        binding.tvStartAddress.text = "${order.startAddress.city} ${order.startAddress.address}"
-        binding.tvEndAddress.text = "${order.endAddress.city} ${order.endAddress.address}"
+        binding.tvStartAddress.text = startAddress
+        binding.tvEndAddress.text = endAddress
         binding.tvOrderTime.text = date
-        binding.tvPrice.text = "${order.price.amount.div(100)} ${order.price.currency}"
-        binding.tvDriverName.text = order.vehicle.driverName
-        binding.tvModelName.text = order.vehicle.modelName
-        binding.tvRegNumber.text = order.vehicle.regNumber
+        binding.tvPrice.text = price
+        binding.tvDriverName.text = driverName
+        binding.tvModelName.text = modelName
+        binding.tvRegNumber.text = regNumber
         binding.ivPhoto.load(File(photoPath))
-        /*Glide.with(this)
-            .load(photoPath)
-                .into(binding.ivPhoto)*/
-
     }
 
     private fun formatData(dateString : String) : String {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         val outFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         val originDate = originalFormat.parse(dateString)
-        return outFormat.format(originDate)
+        return originDate?.let{ outFormat.format(it) }.toString()
+    }
+
+    private fun checkImageOnDevice(imagePath : String) : Boolean{
+        val file = File(imagePath)
+        return file.exists()
     }
 
     override fun onDestroyView() {

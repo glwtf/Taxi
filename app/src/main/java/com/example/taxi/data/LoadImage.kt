@@ -9,7 +9,6 @@ import io.ktor.util.cio.*
 import io.ktor.utils.io.*
 import java.io.File
 
-
 class LoadImage {
 
     suspend fun loadImageFromNetwork(imageName : String, dirPath : String) {
