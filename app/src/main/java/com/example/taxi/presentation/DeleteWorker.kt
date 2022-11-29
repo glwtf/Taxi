@@ -4,13 +4,10 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.*
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -25,14 +22,11 @@ class DeleteWorker(
                 NotificationManager
 
     override suspend  fun doWork(): Result {
-        log("doWork")
         val fullImagePath = workerParameters.inputData.getString(IMAGE_FULL_PATH)
         if (fullImagePath != null) {
             val progress = "Starting Download"
-            val result = deletePhoto(fullImagePath)
-            log(result)
+            deletePhoto(fullImagePath)
             setForeground(createForegroundInfo(progress))
-            log("doWork2")
         }
         return Result.success()
     }
@@ -40,13 +34,12 @@ class DeleteWorker(
     private fun deletePhoto(fullImagePath : String) = File(fullImagePath).delete()
 
     private fun createForegroundInfo(progress: String): ForegroundInfo {
-        log("createForegroundInfo")
-        return ForegroundInfo(2, notification(progress))
+        return ForegroundInfo(NOTIFICATION_ID, notification(progress))
     }
 
     private fun notification(progress: String) : Notification {
-        val id = "channelId"
-        val title = "Taxi"
+        val id = CHANEL_ID
+        val title = NOTIFICATION_TITLE
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel()
@@ -67,19 +60,19 @@ class DeleteWorker(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createChannel() {
-        val chan = NotificationChannel("channelId", "channelName", NotificationManager.IMPORTANCE_NONE)
+        val chan = NotificationChannel(CHANEL_ID, CHANEL_NAME, NotificationManager.IMPORTANCE_NONE)
         chan.lightColor = Color.BLUE
         chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         notificationManager.createNotificationChannel(chan)
     }
 
-    private fun log(message: Any) {
-        Log.d("SERVICE_TAG", "MyWorker: ${message.toString()}")
-    }
-
     companion object {
 
         private const val IMAGE_FULL_PATH = "imageFullPath"
+        private const val CHANEL_ID = "channelId"
+        private const val CHANEL_NAME = "channelName"
+        private const val NOTIFICATION_TITLE = "Taxi"
+        private const val NOTIFICATION_ID = 2
 
         fun makeRequest(fullImagePath: String): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<DeleteWorker>()

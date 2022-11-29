@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="4dp"
+    android:paddingStart="8dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="4dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
@@ -15,46 +15,47 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/purple_200"
+        android:background="@drawable/ripple"
         android:orientation="vertical"
         android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_order_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="@string/order_date" />
+
 
         <TextView
             android:id="@+id/tv_start_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="Начальный адрес" />
+            tools:text="@string/start_address" />
 
         <TextView
             android:id="@+id/tv_end_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="Конечный адрес" />
-
-        <TextView
-            android:id="@+id/tv_order_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="Дата поездки" />
+            tools:text="@string/end_address" />
 
         <TextView
             android:id="@+id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="Стоимость заказа" />
+            tools:text="@string/price" />
 
     </LinearLayout>
 

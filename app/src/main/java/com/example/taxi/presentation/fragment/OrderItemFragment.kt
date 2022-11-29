@@ -1,6 +1,5 @@
 package com.example.taxi.presentation.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,15 +13,12 @@ import com.example.taxi.domain.Order
 import com.example.taxi.presentation.viewmodel.OrderItemViewModel
 import java.io.File
 import androidx.lifecycle.*
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.example.taxi.presentation.DeleteWorker
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
 
 class OrderItemFragment : Fragment() {
 
@@ -61,41 +57,43 @@ class OrderItemFragment : Fragment() {
     private suspend fun loadData(order: Order) {
         val photo = order.vehicle.photo
         val cacheDir = "${context?.cacheDir?.toString()}/"
-        //val cacheDir = IMAGE_DOWNLOAD_PATH_PREFIX
         val photoPath = "$cacheDir$photo"
         val date = formatData(order.orderTime)
+        val startAddress = "${order.startAddress.city} ${order.startAddress.address}"
+        val endAddress = "${order.endAddress.city} ${order.endAddress.address}"
+        val price = "${order.price.amount.div(100)} ${order.price.currency}"
+        val driverName = order.vehicle.driverName
+        val modelName = order.vehicle.modelName
+        val regNumber = order.vehicle.regNumber
 
-        if (!orderItemViewModel.checkImageOnDevice(photoPath)) {
+        if (!checkImageOnDevice(photoPath)) {
             orderItemViewModel.loadImageFromNetwork(photo, cacheDir)
-            Log.d("SERVICE_TAG", "Load file $photoPath")
-
             val workManager = WorkManager.getInstance(requireContext().applicationContext)
             workManager.enqueue(
                 DeleteWorker.makeRequest(photoPath)
             )
         }
 
-        _binding?.ivPhoto?.load(File(photoPath))
-        /*_binding?.ivPhoto?.let {
-            Glide
-                .with(this)
-                .load(IMAGE_URL_PREFIX+photo)
-                .into(it)
-        }*/
-        _binding?.tvStartAddress?.text = "${order.startAddress.city} ${order.startAddress.address}"
-        _binding?.tvEndAddress?.text = "${order.endAddress.city} ${order.endAddress.address}"
-        _binding?.tvOrderTime?.text = date
-        _binding?.tvPrice?.text = "${order.price.amount.div(100)} ${order.price.currency}"
-        _binding?.tvVehicle?.text = order.vehicle.toString()
-
-
+        binding.tvStartAddress.text = startAddress
+        binding.tvEndAddress.text = endAddress
+        binding.tvOrderTime.text = date
+        binding.tvPrice.text = price
+        binding.tvDriverName.text = driverName
+        binding.tvModelName.text = modelName
+        binding.tvRegNumber.text = regNumber
+        binding.ivPhoto.load(File(photoPath))
     }
 
     private fun formatData(dateString : String) : String {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        val outFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        val outFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         val originDate = originalFormat.parse(dateString)
-        return outFormat.format(originDate)
+        return originDate?.let{ outFormat.format(it) }.toString()
+    }
+
+    private fun checkImageOnDevice(imagePath : String) : Boolean{
+        val file = File(imagePath)
+        return file.exists()
     }
 
     override fun onDestroyView() {

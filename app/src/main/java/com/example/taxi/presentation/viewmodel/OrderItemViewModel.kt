@@ -18,9 +18,4 @@ class OrderItemViewModel : ViewModel() {
     suspend fun loadImageFromNetwork(imageName : String, dirPath : String) {
         loadImageUseCase.loadImageFromNetwork(imageName, dirPath)
     }
-
-    fun checkImageOnDevice(imagePath : String) : Boolean{
-        val file = File(imagePath)
-        return file.exists()
-    }
 }
