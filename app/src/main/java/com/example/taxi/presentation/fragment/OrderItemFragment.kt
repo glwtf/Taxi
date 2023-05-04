@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.taxi.databinding.FragmentOrderItemBinding
@@ -22,9 +23,7 @@ import java.text.SimpleDateFormat
 
 class OrderItemFragment : Fragment() {
 
-    private val orderItemViewModel by lazy {
-        ViewModelProvider(this)[OrderItemViewModel::class.java]
-    }
+    private val viewModel: OrderItemViewModel by viewModels()
     private val args by navArgs<OrderItemFragmentArgs>()
 
     private var _binding: FragmentOrderItemBinding? = null
@@ -42,7 +41,7 @@ class OrderItemFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val orderItem = orderItemViewModel.getShopItem(args.orderId)
+        val orderItem = viewModel.getShopItem(args.orderId)
         if (orderItem != null)
         {
             lifecycleScope.launch {
@@ -58,7 +57,7 @@ class OrderItemFragment : Fragment() {
         val photo = order.vehicle.photo
         val cacheDir = "${context?.cacheDir?.toString()}/"
         val photoPath = "$cacheDir$photo"
-        val date = formatData(order.orderTime)
+        val date = viewModel.formatData(order.orderTime)
         val startAddress = "${order.startAddress.city} ${order.startAddress.address}"
         val endAddress = "${order.endAddress.city} ${order.endAddress.address}"
         val price = "${order.price.amount.div(100)} ${order.price.currency}"
@@ -66,8 +65,8 @@ class OrderItemFragment : Fragment() {
         val modelName = order.vehicle.modelName
         val regNumber = order.vehicle.regNumber
 
-        if (!checkImageOnDevice(photoPath)) {
-            orderItemViewModel.loadImageFromNetwork(photo, cacheDir)
+        if (!viewModel.checkImageOnDevice(photoPath)) {
+            viewModel.loadImageFromNetwork(photo, cacheDir)
             val workManager = WorkManager.getInstance(requireContext().applicationContext)
             workManager.enqueue(
                 DeleteWorker.makeRequest(photoPath)
@@ -82,18 +81,6 @@ class OrderItemFragment : Fragment() {
         binding.tvModelName.text = modelName
         binding.tvRegNumber.text = regNumber
         binding.ivPhoto.load(File(photoPath))
-    }
-
-    private fun formatData(dateString : String) : String {
-        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        val outFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        val originDate = originalFormat.parse(dateString)
-        return originDate?.let{ outFormat.format(it) }.toString()
-    }
-
-    private fun checkImageOnDevice(imagePath : String) : Boolean{
-        val file = File(imagePath)
-        return file.exists()
     }
 
     override fun onDestroyView() {

@@ -5,15 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.taxi.data.OrdersRepositoryImpl
 import com.example.taxi.domain.GetOrderListUseCase
 import com.example.taxi.domain.LoadOrdersUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainFragmentViewModel : ViewModel() {
-
-    private val repository = OrdersRepositoryImpl
-
-    private val getOrderListUseCase = GetOrderListUseCase(repository)
-    private val loadOrdersUseCase = LoadOrdersUseCase(repository)
-
+@HiltViewModel
+class MainFragmentViewModel @Inject constructor(
+    private val getOrderListUseCase : GetOrderListUseCase,
+    private val loadOrdersUseCase : LoadOrdersUseCase,
+) : ViewModel() {
     init {
         viewModelScope.launch {
             loadOrdersUseCase()

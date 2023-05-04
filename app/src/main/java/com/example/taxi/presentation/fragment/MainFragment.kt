@@ -5,18 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.taxi.R
 import com.example.taxi.databinding.FragmentMainBinding
 import com.example.taxi.presentation.viewmodel.MainFragmentViewModel
 import com.example.taxi.presentation.recyclerview.OrderListAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
-
-    private val viewModel by lazy {
-        ViewModelProvider(this)[MainFragmentViewModel::class.java]
-    }
+    private val viewModel: MainFragmentViewModel by viewModels()
 
     private lateinit var rvAdapter: OrderListAdapter
 
@@ -35,9 +39,14 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
-        viewModel.ldOrders.observe(viewLifecycleOwner){ item ->
-            rvAdapter.submitList(item)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.ldOrders.collect{ item ->
+                    rvAdapter.submitList(item)
+                }
+            }
         }
+
     }
 
     override fun onDestroyView() {
@@ -46,7 +55,7 @@ class MainFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        val rvShopList = _binding!!.rvOrderList
+        val rvShopList = binding.rvOrderList
         with(rvShopList) {
             rvAdapter = OrderListAdapter()
             adapter = rvAdapter
