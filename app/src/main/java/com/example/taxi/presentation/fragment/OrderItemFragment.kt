@@ -1,13 +1,11 @@
 package com.example.taxi.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.example.taxi.databinding.FragmentOrderItemBinding
 import com.example.taxi.domain.Order
@@ -16,11 +14,11 @@ import java.io.File
 import androidx.lifecycle.*
 import androidx.navigation.fragment.navArgs
 import androidx.work.WorkManager
-import com.bumptech.glide.Glide
 import com.example.taxi.presentation.DeleteWorker
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
+@AndroidEntryPoint
 class OrderItemFragment : Fragment() {
 
     private val viewModel: OrderItemViewModel by viewModels()
