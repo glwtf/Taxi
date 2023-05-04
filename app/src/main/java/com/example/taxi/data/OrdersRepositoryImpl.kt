@@ -1,13 +1,14 @@
 package com.example.taxi.data
 
-import androidx.lifecycle.MutableLiveData
 import com.example.taxi.domain.Order
 import com.example.taxi.domain.OrdersRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
+import javax.inject.Inject
 
-object OrdersRepositoryImpl : OrdersRepository {
+class OrdersRepositoryImpl @Inject constructor() : OrdersRepository {
 
-    private val ldOrders = MutableLiveData<List<Order>>()
+    private val ldOrders = MutableStateFlow<List<Order>>(listOf())
     private var orderList = listOf<Order>()
 
     override fun getOrderList() = ldOrders
@@ -20,7 +21,7 @@ object OrdersRepositoryImpl : OrdersRepository {
             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+'HH:MM");
             sdf.parse(item.orderTime)
         }
-        ldOrders.value = orderList.toList()
+        ldOrders.value = orderList
     }
 
     override suspend fun loadImageFromNetwork(imageName : String, dirPath : String) {
